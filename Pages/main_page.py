@@ -3,6 +3,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
+from result_product.Pages.apple_page import ApplePage
 from result_product.base.base_page import BasePage
 
 
@@ -16,7 +17,6 @@ class MainPage(BasePage):
     # Locators
     menu_catalog = "//*[@class='dropdown dropcats']/a[normalize-space(text())='Каталог товаров']"
     apple_catalog = "//*[@class='dropdown dropcats']//a[normalize-space(text())='Apple']"
-    header_catalog = "//h1[contains(text(), 'Apple — купить в Уфе iPhone, iPad, MacBook и аксессуары')]"
 
 
     # Getters
@@ -26,8 +26,6 @@ class MainPage(BasePage):
     def get_apple_catalog(self):
         return WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable((By.XPATH, self.apple_catalog)))
 
-    def get_header_catalog(self):
-        return WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable((By.XPATH, self.header_catalog)))
 
     # Actions
     def action_menu_catalog(self):
@@ -40,10 +38,9 @@ class MainPage(BasePage):
         print("Нажатие кнопки Apple")
 
     # Metgods
-    def open_catalog_apple(self):
+    def maps_to_apple_catalog(self):
         self.browser.get(self.base_url)
         self.browser.maximize_window()
         self.action_menu_catalog()
         self.click_phone_catalog()
-        self.verification_url("https://divizion.com/apple-1/")
-        self.verification_word(self.get_header_catalog(), "Apple — купить в Уфе iPhone, iPad, MacBook и аксессуары")
+        return ApplePage(self.browser)

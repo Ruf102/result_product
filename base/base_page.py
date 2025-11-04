@@ -16,7 +16,3 @@ class BasePage:
     #     assert  value_word == word, f"ОР: {value_word} != ФР: {word}"
     #     print(f"ОР: {value_word} == ФР: {word}")
 
-    """Метод получения текста из веб-элемента"""
-    def get_text(self, element):
-        return element.text
-

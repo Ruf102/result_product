@@ -1,3 +1,6 @@
+import time
+
+from trio import fail_after
 
 from result_product.Pages.main_page import MainPage
 from result_product.Pages.apple_page import ApplePage
@@ -49,8 +52,58 @@ def test_smoke_by_product(browser):
     print(f"УСПЕХ: Сортировка по цене отработала корректно")
 
     # Проверка добавления товара в корзину
-    expected_price_product_1 = ap.get_price_product_value()
-    expected_name_product_1 = ap.get_name_product_value()
+    expected_price_product_1 = ap.get_price_product_1_catalog_value()
+    expected_name_product_1 = ap.get_name_product_1_catalog_value()
+    expected_count = f"1 товар(ов) - {expected_price_product_1}"
+    ap.click_button_buy_product_1()
+
+    cart_button_text = ap.get_cart_value()
+    assert expected_count in cart_button_text and expected_price_product_1 in cart_button_text, \
+        "Не найдены и количество, и цена на кнопке перехода в корзину"
+    print("УСПЕХ: Цена товара в каталоге и на кнопке перехода в корзину совпадают")
+
+    # Проверка цены в drop-down cart
+    ap.click_cart()
+
+    assert expected_name_product_1 == ap.get_name_product_1_dropdown_value(), \
+        f"Название товара не совпадает в dropdown ОР: {expected_url}, ФР: {ap.get_name_product_1_dropdown_value()}"
+
+    assert ap.get_price_product_1_dropdown_value() == \
+           ap.get_result_price_dropdown_value() == \
+           ap.get_total_price_dropdown_value() == \
+           expected_price_product_1, (f"Цены не совпадают: "
+                                    f"Товар: {ap.get_price_product_1_dropdown_value()}, "
+                                    f"Итого: {ap.get_result_price_dropdown_value()}, "
+                                    f"Кнопка: {ap.get_total_price_dropdown_value()}, "
+                                    f"Ожидаемая: {expected_price_product_1}")
+    print("Цены в выпадающем меню корзины совпадают")
+
+    cp = ap.click_button_order()
+
+    expected_url = "https://divizion.com/simplecheckout/"
+    actual_url = cp.get_current_url()
+    assert actual_url == expected_url, \
+        f"ОШИБКА URL: ожидался '{expected_url}', получен '{actual_url}'"
+
+    expected_text_header = "Оформление заказа"
+    actual_header_text = cp.get_header_value()
+    assert actual_header_text == expected_text_header, \
+        f"ОШИБКА В HEADERS: ОР: {expected_text_header}, ФР: {actual_header_text}"
+    print(f"УСПЕХ: Заголовок '{expected_text_header}' корректен.")
+
+    assert expected_name_product_1 == cp.get_name_product_order_value(), \
+        f"Название товара не совпадает с ОР: {expected_price_product_1}, ФР: {cp.get_name_product_order_value()}"
+
+    assert expected_price_product_1 == \
+           cp.get_price_product_order_value() == \
+           cp.get_price_product_result_order_value() == \
+           cp.get_price_cart_total_value()
+
+    cp.complete_order()
+    time.sleep(5)
+
+
+
 
 
 

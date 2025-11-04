@@ -37,7 +37,7 @@ class MainPage(BasePage):
         self.get_apple_catalog().click()
         print("Нажатие кнопки Apple")
 
-    # Metgods
+    # Methods
     def maps_to_apple_catalog(self):
         self.browser.get(self.base_url)
         self.browser.maximize_window()

@@ -6,6 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
+from result_product.Pages.checkout_page import CheckoutPage
 from result_product.base.base_page import BasePage
 
 
@@ -23,6 +24,12 @@ class ApplePage(BasePage):
     input_sort = "//*[@id='input-sort']"
     all_price = "//*[@class='price ']"
     cart_total = "//span[@id='cart-total']"
+    name_product_1_dropdown = "//*[@id='cart']/ul/li[1]/table/tbody/tr/td[2]"
+    price_product_1_dropdown = "//*[@id='cart']/ul/li[1]/table/tbody/tr/td[4]"
+    result_price_dropdown = "//*[@id='cart']/ul/li[2]/div/table/tbody/tr[1]/td[2]"
+    total_price_dropdown = "//*[@id='cart']/ul/li[2]/div/table/tbody/tr[2]/td[2]"
+    button_order = "//a[@class='btn btn-primary']"
+
 
 
     # Getters
@@ -31,7 +38,7 @@ class ApplePage(BasePage):
         return WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable((By.XPATH, self.header_catalog)))
 
     def get_header_catalog_text(self):
-        return self.get_text(self.get_header_catalog())
+        return self.get_header_catalog().text
 
     def get_count_product(self):
         element = self.browser.find_elements(By.XPATH, self.elements_for_page)
@@ -69,17 +76,47 @@ class ApplePage(BasePage):
 
         return prices
 
-    def get_name_product_value(self):
-        return self.get_text(self.get_name_product_1_catalog())
+    def get_name_product_1_catalog_value(self):
+        return self.get_name_product_1_catalog().text
 
-    def get_price_product_value(self):
-        return self.get_text(self.get_price_product_1_catalog())
+    def get_price_product_1_catalog_value(self):
+        return self.get_price_product_1_catalog().text
+
+    def get_cart_value(self):
+        return self.get_cart_total().text
+
+    def get_price_product_1_dropdown(self):
+        return WebDriverWait(self.browser, 5).until(EC.visibility_of_element_located((By.XPATH, self.price_product_1_dropdown)))
+
+    def get_result_price_dropdown(self):
+        return WebDriverWait(self.browser, 5).until(EC.visibility_of_element_located((By.XPATH, self.result_price_dropdown)))
+
+    def get_total_price_dropdown(self):
+        return WebDriverWait(self.browser, 5).until(EC.visibility_of_element_located((By.XPATH, self.total_price_dropdown)))
+
+    def get_name_product_1_dropdown(self):
+        return  WebDriverWait(self.browser, 5).until(EC.visibility_of_element_located((By.XPATH, self.name_product_1_dropdown)))
+
+    def get_price_product_1_dropdown_value(self):
+        return self.get_price_product_1_dropdown().text
+
+    def get_result_price_dropdown_value(self):
+        return self.get_result_price_dropdown().text
+
+    def get_total_price_dropdown_value(self):
+        return self.get_total_price_dropdown().text
+
+    def get_name_product_1_dropdown_value(self):
+        return self.get_name_product_1_dropdown().text
+
+    def get_button_order(self):
+        return WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable((By.XPATH, self.button_order)))
 
     # Action
 
     def click_button_buy_product_1(self):
         self.get_button_buy_product_1().click()
-        print("Нажатие кнопки в корзину первого товара")
+        print("Клик кнопки в корзину первого товара")
 
     def select_drop_down_limit(self, count):
         self.get_input_limit().select_by_visible_text(f"{count}")
@@ -91,8 +128,11 @@ class ApplePage(BasePage):
 
     def click_cart(self):
         self.get_cart_total().click()
+        print("Открытие выпадающего списка корзины")
+
+    def click_button_order(self):
+        self.get_button_order().click()
+        print("Клик на кнопку оформление заказа")
+        return CheckoutPage(self.browser)
 
     # Methods
-
-    def add_product_cart(self):
-        self.click_button_buy_product_1()

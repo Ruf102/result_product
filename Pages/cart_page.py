@@ -5,12 +5,16 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
+from result_product.Pages.finish_page import FinishPage
 from result_product.base.base_page import BasePage
 
 
-class CheckoutPage(BasePage):
+class CartPage(BasePage):
     def __init__(self, browser):
         super().__init__(browser)
+
+    expected_url = "https://divizion.com/simplecheckout/"
+    expected_text_header = "Оформление заказа"
 
     #Locators
 
@@ -95,8 +99,16 @@ class CheckoutPage(BasePage):
 
     def complete_order(self):
         self.input_first_name()
-        time.sleep(5)
         self.input_telephone()
-        time.sleep(5)
         self.click_check_box_rule()
-        #self.click_checkout_button()
+        self.click_checkout_button()
+        print("Клик кнопки оформление заказа")
+        return FinishPage(self.browser)
+
+    """Проверка цены в выпадающем меню каталога"""
+    def is_cart_prices_match(self, expected_price):
+        product_price = self.get_price_product_order_value()
+        result_price = self.get_price_product_result_order_value()
+        total_price = self.get_price_cart_total_value()
+
+        return product_price == result_price == total_price == expected_price

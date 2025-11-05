@@ -6,13 +6,20 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
-from result_product.Pages.checkout_page import CheckoutPage
+from result_product.Pages.cart_page import CartPage
 from result_product.base.base_page import BasePage
 
 
 class ApplePage(BasePage):
     def __init__(self, browser):
         super().__init__(browser)
+
+
+    expected_url = "https://divizion.com/apple-1/"
+    expected_text_header = "Apple — купить в Уфе iPhone, iPad, MacBook и аксессуары"
+    default_product_page = 48
+    LIMIT_25 = 25
+    EXPECTED_INITIAL_COUNT = 1
 
     # Locator
     header_catalog = "//h1[contains(text(), 'Apple — купить в Уфе iPhone, iPad, MacBook и аксессуары')]"
@@ -112,19 +119,26 @@ class ApplePage(BasePage):
     def get_button_order(self):
         return WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable((By.XPATH, self.button_order)))
 
+    def get_cart_summary_data(self):
+        full_text = self.get_cart_value()
+        parts = full_text.split('-')
+        count = parts[0].split(' ')[0]
+        price = parts[1].strip()
+        return int(count),price
+
     # Action
 
     def click_button_buy_product_1(self):
         self.get_button_buy_product_1().click()
         print("Клик кнопки в корзину первого товара")
 
-    def select_drop_down_limit(self, count):
+    def set_product_limit(self, count):
         self.get_input_limit().select_by_visible_text(f"{count}")
         print(f"Установлен фильтра на лимит товаров на странице кол-во {count}")
 
-    def select_drop_down_sort(self, text):
-        self.get_input_sort().select_by_visible_text(text)
-        print(f"Установлен фильтра по {text}")
+    def sort_by_price_descending(self):
+        self.get_input_sort().select_by_visible_text("Цена (высокая > низкая)")
+        print(f"Установлен фильтра по Цена (высокая > низкая)")
 
     def click_cart(self):
         self.get_cart_total().click()
@@ -133,6 +147,21 @@ class ApplePage(BasePage):
     def click_button_order(self):
         self.get_button_order().click()
         print("Клик на кнопку оформление заказа")
-        return CheckoutPage(self.browser)
+        return CartPage(self.browser)
 
     # Methods
+
+    """Проверяет, отсортированы ли товары на странице по убыванию цены."""
+    def is_products_sorted_by_price_descending(self):
+        actual_prices = self.get_product_prices_as_numbers()
+        expected_prices = sorted(actual_prices, reverse=True)
+
+        return actual_prices == expected_prices
+
+    """Проверка цены в выпадающем меню каталога"""
+    def is_dropdown_prices_match(self, expected_price):
+        product_price = self.get_price_product_1_dropdown_value()
+        result_price = self.get_result_price_dropdown_value()
+        total_price = self.get_total_price_dropdown_value()
+        return product_price == result_price == total_price == expected_price
+

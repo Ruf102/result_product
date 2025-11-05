@@ -1,4 +1,7 @@
+from datetime import datetime
 
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 class BasePage:
     def __init__(self, browser):
@@ -10,9 +13,12 @@ class BasePage:
         # assert url == result_url, f"Адрес {url} не совпадает с {result_url}"
         # print("Адрес совпадает")
 
-    # """Метод проверки текста"""
-    # def verification_word(self, result_word, word):
-    #     value_word = result_word.text
-    #     assert  value_word == word, f"ОР: {value_word} != ФР: {word}"
-    #     print(f"ОР: {value_word} == ФР: {word}")
+    """Метод создания скриншота"""
+    def get_screen(self):
+        now_date = datetime.now().strftime("%d.%m.%Y_%H-%M-%S")
+        name_screen = "screen" + now_date + ".png"
+        self.browser.save_screenshot(f"result_product\\Screen\\{name_screen}")
 
+    """Метод ожидания загрузки страницы"""
+    def wait_for_url(self, expected_url):
+        WebDriverWait(self.browser, 10).until(EC.url_to_be(expected_url))

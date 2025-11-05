@@ -77,8 +77,8 @@ def test_smoke_buy_product(browser):
 
     # --- Проверка названия товара добавленного в заказ
     assert expected_name_product_1 == cp.get_name_product_order_value(), \
-        f"Название товара не совпадает с ОР: {expected_price_product_1}, ФР: {cp.get_name_product_order_value()}"
-    print(f"УСПЕХ: Название товара совпадает с ОР: {expected_price_product_1}, ФР: {cp.get_name_product_order_value()}")
+        f"Название товара не совпадает с ОР: {expected_name_product_1}, ФР: {cp.get_name_product_order_value()}"
+    print(f"УСПЕХ: Название товара совпадает с ОР: {expected_name_product_1}, ФР: {cp.get_name_product_order_value()}")
 
     # --- Проверка цены в корзине
     assert cp.is_cart_prices_match(expected_price_product_1), \
@@ -93,7 +93,7 @@ def test_smoke_buy_product(browser):
     # --- Проверка URL на финальной странице
     assert fp.get_current_url() == fp.expected_url, \
         f"URL завершения заказа не совпадает с ОР: {fp.expected_url}, ФР: {fp.get_current_url()}"
-    print(f"УСПЕХ: URL '{fp.get_current_url()}' корректен.")
+    print(f"УСПЕХ: URL на финальной странице '{fp.get_current_url()}' корректен.")
 
     fp.finish()
 

@@ -130,7 +130,7 @@ class ApplePage(BasePage):
 
     def click_button_buy_product_1(self):
         self.get_button_buy_product_1().click()
-        print("Клик кнопки в корзину первого товара")
+        print("Клик кнопки добавления в корзину первого товара")
 
     def set_product_limit(self, count):
         self.get_input_limit().select_by_visible_text(f"{count}")

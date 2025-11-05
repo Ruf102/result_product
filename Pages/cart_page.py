@@ -84,10 +84,12 @@ class CartPage(BasePage):
     def input_first_name(self):
         faker = Faker('ru_RU')
         self.get_first_name().send_keys(faker.first_name())
+        print("Поле имя заполнено")
 
     def input_telephone(self):
         faker = Faker("ru_RU")
         self.get_number().send_keys(faker.phone_number())
+        print("Поле номер телефона заполнено")
 
     def click_check_box_rule(self):
         self.get_check_box_rule().click()
